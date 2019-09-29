@@ -1,12 +1,18 @@
-
 # OS-specific
 .DS_Store
 
 # Vagrant stuff
 .vagrant/
 
+# Ansible
+*.retry
+
 # IDE junk
 .idea/
 *.iml
+*.ipr
+*.iws
 .project
+out/
+
 

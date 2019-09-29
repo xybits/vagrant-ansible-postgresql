@@ -1,0 +1,36 @@
+---
+
+# PostgreSQL Replication
+postgres_password: postgres
+postgres_replication_user: replicator
+postgres_replication_password: replication
+postgres_replication_slot: replica_stream_pg
+
+# - PostgreSQL Configuration -
+postgresql_config:
+  - listen_addresses: '*'
+  - max_connections: 200
+  - shared_buffers: 256MB
+  - wal_level: replica
+  - max_wal_senders: 5
+  - wal_keep_segments: 30
+  - max_replication_slots: 5
+  - hot_standby: on
+  - hot_standby_feedback: on
+  - include_dir: "conf.d"
+
+postgresql_hba_config:
+  - local   all             postgres                                         peer
+  - host    all             postgres                 10.233.89.43/32         md5
+  - host    all             postgres                 10.233.89.47/32         md5
+  - host    replication     {{ postgres_replication_user }}               10.233.89.43/32         md5
+  - host    replication     {{ postgres_replication_user }}               10.233.89.47/32         md5
+
+# PostgreSQL Data
+postgresql_users:
+  - name: postgres
+    password: "{{ postgres_password }}"
+  - name: "{{ postgres_replication_user }}"
+    password: "{{ postgres_replication_password }}"
+    attributes: ['LOGIN', 'REPLICATION']
+

@@ -1,0 +1,37 @@
+---
+
+- name: install > PostgreSQL packages
+  yum:
+    name: "{{ postgresql_packages }}"
+    state: present
+    update_cache: true
+
+- name: install > libselinux-python for CentOS 6
+  yum:
+    name: libselinux-python
+    state: present
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "6"
+
+- name: install > Initialize PostgreSQL data in CentOS 6
+  command: service  {{ postgresql_service_name }} initdb
+  environment:
+    PGDATA: "{{ postgres_data_dir }}"
+  args:
+    creates: "{{ postgres_data_dir }}/postgresql.conf"
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "6"
+
+- name: install > Initialize PostgreSQL data directory in CentOS 7
+  command: $PGSETUP initdb
+  environment:
+    PGDATA: "{{ postgres_data_dir }}"
+    PGSETUP: "{{ postgres_bin_dir }}/postgresql-11-setup"
+  args:
+    creates: "{{ postgres_data_dir }}/postgresql.conf"
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "7"
+

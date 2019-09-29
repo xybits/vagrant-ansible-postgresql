@@ -1,0 +1,44 @@
+---
+
+- name: serives > PostgreSQL service restart
+  block:
+    - name: PostgreSQL service in CentOS 6
+      service:
+        name: "{{ postgresql_service_name }}"
+        state: restarted
+      when:
+        - ansible_distribution == "CentOS"
+        - ansible_distribution_major_version == "6"
+
+    - name: PostgreSQL service in CentOS 7
+      systemd:
+        name: "{{ postgresql_service_name }}"
+        state: restarted
+      when:
+        - ansible_distribution == "CentOS"
+        - ansible_distribution_major_version == "7"
+
+  when: ( postgresql_conf_edit is defined and postgresql_conf_edit is changed )
+     or ( postgresql_hba_conf_edit is defined and postgresql_hba_conf_edit is changed )
+     or ( postgresql_replication_conf_edit is defined and postgresql_replication_conf_edit is changed)
+
+- name: services > Ensure PostgreSQL service is running
+  block:
+    - name: PostgreSQL service in CentOS 6
+      service:
+        name: "{{ postgresql_service_name }}"
+        state: started
+        enabled: true
+      when:
+        - ansible_distribution == "CentOS"
+        - ansible_distribution_major_version == "6"
+
+    - name: PostgreSQL service in CentOS 7
+      systemd:
+        name: "{{ postgresql_service_name }}"
+        state: started
+        enabled: true
+      when:
+        - ansible_distribution == "CentOS"
+        - ansible_distribution_major_version == "7"
+

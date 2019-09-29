@@ -1,0 +1,5 @@
+
+# Replication config
+postgres_replication_standby_mode: true
+postgres_replication_host: "10.233.89.43"
+

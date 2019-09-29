@@ -1,0 +1,4 @@
+# hostname:port:database:username:password
+{{ postgres_replication_host }}:5432:postgres:postgres:{{ postgres_password }}
+{{ postgres_replication_host }}:5432:replication:{{ postgres_replication_user }}:{{ postgres_replication_password }}
+

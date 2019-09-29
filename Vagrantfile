@@ -17,11 +17,17 @@ BOXES = {
 }
 
 INSTANCES  = {
-  :server1 => {
-    :private_ip => '10.233.89.101',
+  :postgresql01 => {
+    :private_ip => '10.233.89.43',
+    :roles_path => 'ansible-roles/',
+    :inventory  => 'ansible-data/inventories/cluster/hosts.yml',
+    :playbook   => 'ansible-data/playbooks/cluster/databases.yml',
   },
-  :server2 => {
-    :private_ip => '10.233.89.102',
+  :postgresql02 => {
+    :private_ip => '10.233.89.47',
+    :roles_path => 'ansible-roles/',
+    :inventory  => 'ansible-data/inventories/cluster/hosts.yml',
+    :playbook   => 'ansible-data/playbooks/cluster/databases.yml',
   },
 }
 
@@ -51,6 +57,15 @@ Vagrant.configure("2") do |config|
         vb.name   = full_name
         vb.memory = machine[:memory]
         vb.cpus   = machine[:cpus]
+      end
+
+      # Provision
+      node.vm.provision "ansible" do |ans|
+        ans.verbose  = "v"
+        ans.limit    = machine[:private_ip]
+        ans.playbook = machine[:playbook]
+        ans.inventory_path    = machine[:inventory]
+        ans.galaxy_roles_path = machine[:roles_path]
       end
     end
   end

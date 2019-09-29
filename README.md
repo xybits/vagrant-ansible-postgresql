@@ -1,7 +1,7 @@
 
-# vagrant-multiservers
+# vagrant-ansible-postgresql
 
-Example of multiple servers orchestration with Vagrant, Ansible and Puppet
+Example of PostgreSQL replication with two servers: master and standby
 
 
 ## Prerequisites:
@@ -10,6 +10,7 @@ Download and install the following tools:
 
 - [VirtualBox & Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 - [Vagrant](https://www.vagrantup.com/downloads.html)
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) 2.8+
 
 ## Running the code
 
@@ -17,18 +18,25 @@ Download and install the following tools:
   ```bash
   -:$ vagrant status
   ```
-- Instantiate the servers:
+- Instantiate servers:
    ```bash
-   -:$ vagrant up server1 server2
+   -:$ vagrant up postgresql01 postgresql02
    ```
-- Verify the instances:
+- Connect to the master server
    ```bash
-   -:$ vagrant ssh server1 -- "hostname && hostname -I"
-   -:$ vagrant ssh server2 -- "hostname && hostname -I"
+   -:$ vagrant ssh postgresql01 -- -t "sudo -i -u postgres psql"
+   postgres=# \l                         # DATABASES LISTED           (1)
+   postgres=# create database test;      # 'test' DATABASE CREATED    (4)
+   postgres=# \l                         # DATABASES LISTED           (6)
+   postgres=# drop database test;        # 'test' DATABASE DROPPED    (7)
+   postgres=# \l                         # DATABASES LISTED           (9)
    ```
-- Test communication between servers:
+- Connect to the standby server
    ```bash
-   -:$ vagrant ssh server1 -- "ping -c 4 10.233.89.102"
-   -:$ vagrant ssh server2 -- "ping -c 4 10.233.89.101"
+   -:$ vagrant ssh postgresql02 -- -t "sudo -i -u postgres psql"
+   postgres=# \l                         # DATABASES LISTED           (2)
+   postgres=# create database test;      # ERROR: READONLY TRANSACION (3)
+   postgres=# \l                         # DATABASES LISTED           (5)
+   postgres=# \l                         # DATABASES LISTED           (8)
    ```
 

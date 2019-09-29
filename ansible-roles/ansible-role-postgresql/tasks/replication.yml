@@ -1,0 +1,87 @@
+---
+
+- name: replication > Check recovery.conf
+  stat:
+    path: "{{ postgres_data_dir }}/recovery.conf"
+  register: recovery_conf
+
+- name: replication > Check recovery.done
+  stat:
+    path: "{{ postgres_data_dir }}/recovery.done"
+  register: recovery_done
+
+- name: replication >  PostgreSQL base backup
+  block:
+    - name: replication > Create .pgpass
+      template:
+        src: .pgpass.j2
+        dest: ~/.pgpass
+        force: yes
+        group: postgres
+        owner: postgres
+        mode: 0400
+      become: true
+      become_user: postgres
+
+    - name: Verify connection to the master PostgreSQL server
+      postgresql_query:
+        login_host: "{{ postgres_replication_host }}"
+        query: SELECT 1
+      become: true
+      become_user: postgres
+
+    - name: Drop slot
+      postgresql_slot:
+        login_host: "{{ postgres_replication_host }}"
+        name: "{{ postgres_replication_slot }}"
+        slot_type: physical
+        state: absent
+      become: true
+      become_user: postgres
+
+    - name: Drop slot
+      postgresql_slot:
+        login_host: "{{ postgres_replication_host }}"
+        name: "{{ postgres_replication_slot }}"
+        slot_type: physical
+        state: present
+      become: true
+      become_user: postgres
+
+    - name: Verify connection to the standby PostgreSQL server
+      postgresql_query:
+        query: SELECT 1
+      become: yes
+      become_user: postgres
+
+    - name: recovery > stop PostgreSQL server
+      service:
+        name: "{{ postgresql_service_name }}"
+        state: stopped
+
+    - name: Cleanup PGDATA directory
+      file:
+        path: "{{ postgres_data_dir }}"
+        state: absent
+
+    - name: Create base backup of the PostgreSQL primary server
+      command:
+        argv:
+          - pg_basebackup
+          - --progress
+          - --verbose
+          - --write-recovery-conf
+          - --wal-method=stream
+          - --slot={{ postgres_replication_slot }}
+          - --pgdata={{ postgres_data_dir }}
+          - --host={{ postgres_replication_host }}
+          - --username={{ postgres_replication_user }}
+      become: true
+      become_user: postgres
+
+  when:
+    - recovery_conf.stat.exists == false
+    - recovery_done.stat.exists == false
+    - postgres_replication_standby_mode is defined
+    - postgres_replication_standby_mode == true
+

@@ -1,0 +1,14 @@
+---
+
+- name: databases > Create postgresql databases
+  postgresql_db:
+    name:       "{{ (db) if (db is string) else (db.name) }}"
+    owner:      "{{ db.owner | default(omit) }}"
+    state:      "{{ db.state | default('present') }}"
+    login_host: "{{ db.host  | default(omit) }}"
+  become: true
+  become_user: postgres
+  with_items: "{{ postgresql_databases }}"
+  loop_control:
+    loop_var: db
+

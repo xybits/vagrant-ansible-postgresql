@@ -1,0 +1,16 @@
+
+- name: users > Create users
+  postgresql_user:
+    name:     "{{ user.name }}"
+    password: "{{ user.password | default(omit) }}"
+    db:       "{{ user.database | default(omit) }}"
+    state:    "{{ user.state | default('present') }}"
+    priv:            "{{ (omit) if (user.privileges is not defined) else user.privileges | join(',') }}"
+    role_attr_flags: "{{ (omit) if (user.attributes is not defined) else user.attributes | join(',') }}"
+    login_host:  "{{ user.host | default(omit) }}"
+  become: true
+  become_user: postgres
+  with_items: "{{ postgresql_users }}"
+  loop_control:
+    loop_var: user
+

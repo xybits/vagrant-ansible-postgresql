@@ -1,0 +1,29 @@
+---
+
+- name: PostgreSQL YUM repository
+  include_tasks: yum_repo.yml
+
+- name: PostgreSQL install
+  include_tasks: install.yml
+
+- name: PostgreSQL configuration
+  include_tasks: config.yml
+
+- name: PostgreSQL services
+  include_tasks: services.yml
+
+- name: PostgreSQL databases
+  include_tasks: databases.yml
+
+- name: PostgreSQL users
+  include_tasks: users.yml
+
+- name: PostgreSQL replication
+  include_tasks: replication.yml
+
+- name: PostgreSQL services
+  include_tasks: services.yml
+
+- name: Firewall rules
+  include_tasks: firewall.yml
+
