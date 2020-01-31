@@ -1,6 +1,6 @@
 ---
 
-- hosts: dbservers
+- hosts: databases
   become: true
   roles:
     - role: ansible-role-postgresql
