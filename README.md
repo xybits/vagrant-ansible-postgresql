@@ -12,7 +12,13 @@ Download and install the following tools:
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) 2.8+
 
-## Running the code
+## Initialize the ansible role
+
+```bash
+  -:$ ansible-galaxy init -r requirements.yml
+```
+
+## Running the code (in the order presented on the right of each statement)
 
 - Status:
   ```bash

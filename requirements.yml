@@ -1,0 +1,7 @@
+---
+
+- src: https://github.com/xybits/ansible-role-postgresql.git
+  version: v0.0.1
+  name: ansible-role-postgresql
+
+
