@@ -18,7 +18,7 @@ Download and install the following tools:
   -:$ ansible-galaxy init -r requirements.yml
 ```
 
-## Running the code (in the order presented on the right of each statement)
+## Running the code in the order shown below:
 
 - Status:
   ```bash
@@ -26,7 +26,7 @@ Download and install the following tools:
   ```
 - Instantiate servers:
    ```bash
-   -:$ vagrant up postgresql01 postgresql02
+   -:$ vagrant up --provision postgresql01 postgresql02
    ```
 - Connect to the master server
    ```bash
