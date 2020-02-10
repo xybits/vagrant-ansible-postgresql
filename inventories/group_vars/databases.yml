@@ -33,3 +33,8 @@ postgresql_users:
     password: "{{ postgres_replication_password }}"
     attributes: ['LOGIN', 'REPLICATION']
 
+# Firewall config
+firewalld_zone: vap
+allow_ports:
+  - port: 5432
+    source: "10.133.29.0/24"

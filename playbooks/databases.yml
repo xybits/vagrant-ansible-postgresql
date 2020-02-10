@@ -4,4 +4,5 @@
   become: true
   roles:
     - role: ansible-role-postgresql
+    - role: ansible-role-firewall
 

@@ -1,7 +1,10 @@
 ---
 
-- src: https://github.com/xybits/ansible-role-postgresql.git
+- src: https://github.com/xybits/ansible-role-firewall.git
   version: v0.0.1
-  name: ansible-role-postgresql
+  name: ansible-role-firewall
 
+- src: https://github.com/xybits/ansible-role-postgresql.git
+  version: v0.0.2
+  name: ansible-role-postgresql
 

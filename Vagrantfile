@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
 
       # Provision
       node.vm.provision "ansible" do |ans|
-        ans.verbose  = "v"
+        ans.verbose  = "vv"
         ans.limit    = machine[:private_ip]
         ans.playbook = machine[:playbook]
         ans.inventory_path    = machine[:inventory]
