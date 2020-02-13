@@ -35,6 +35,16 @@ postgresql_users:
 
 # Firewall config
 firewalld_zone: vap
-allow_ports:
-  - port: 5432
+
+firewalld_services:
+  - name: postgresql
+    short: PostgreSQL Server
+    description: >-
+      PostgreSQL is an open source object-relational database system,
+      developed as part of the POSTGRES project at the University of California at Berkeley.
+    ports:
+      - port: 5432
+
+allow_services:
+  - service: postgresql
     source: "10.133.29.0/24"
